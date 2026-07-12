@@ -1,0 +1,18 @@
+# Node dependencies
+node_modules/
+
+# Production build artifacts
+backend/dist/
+frontend/dist/
+
+# Local SQLite databases and logs
+*.sqlite
+*.log
+backend/stadiumiq.sqlite
+
+# Environment configuration variables
+.env
+
+# System files
+.DS_Store
+Thumbs.db
