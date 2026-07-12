@@ -11,7 +11,10 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
     headers.set('Content-Type', 'application/json');
   }
 
-  const response = await fetch(url, {
+  const baseUrl = (import.meta as any).env.VITE_API_URL || '';
+  const resolvedUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+
+  const response = await fetch(resolvedUrl, {
     ...options,
     headers
   });
