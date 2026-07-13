@@ -24,9 +24,24 @@ const app = express();
 
 // Standard Production Middlewares
 app.use(helmet());
-const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : ['http://localhost:3000'];
+const allowedOrigins = [
+  'https://stadiumiqa.netlify.app',
+  'http://localhost:3000',
+  'http://localhost:5173'
+];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL.replace(/\/$/, ''));
+}
+
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    const cleanOrigin = origin ? origin.replace(/\/$/, '') : '';
+    if (!origin || allowedOrigins.includes(cleanOrigin) || cleanOrigin.endsWith('netlify.app') || cleanOrigin.endsWith('render.com')) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
