@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecret_fifa2026_stadiumiq_key_12345';
+import { JWT_SECRET } from '../config/auth.config';
 
 export interface AuthRequest extends Request {
   user?: {

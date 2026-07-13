@@ -3,8 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '../db/models';
 import { AuthRequest } from '../middleware/auth.middleware';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecret_fifa2026_stadiumiq_key_12345';
+import { JWT_SECRET } from '../config/auth.config';
 
 export class AuthController {
   public static async register(req: Request, res: Response, next: NextFunction) {

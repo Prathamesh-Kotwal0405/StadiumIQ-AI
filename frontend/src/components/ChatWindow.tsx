@@ -186,6 +186,7 @@ export const ChatWindow: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '0.75rem', background: 'rgba(0,0,0,0.2)', padding: '2px 6px', borderRadius: '4px' }}>
                 <Globe size={12} aria-hidden="true" />
                 <select
+                  id="language-picker-select"
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
                   style={{ background: 'none', border: 'none', color: 'inherit', outline: 'none', cursor: 'pointer', fontWeight: 600 }}
@@ -256,6 +257,7 @@ export const ChatWindow: React.FC = () => {
             }}
           >
             <input
+              id="chat-query-input"
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}

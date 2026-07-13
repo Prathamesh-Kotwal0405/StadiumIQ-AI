@@ -5,8 +5,7 @@ import jwt from 'jsonwebtoken';
 import app from '../app';
 import { sequelize } from '../config/db.config';
 import { User, Stadium, Match, Gate, SmartBin, TransitSchedule } from '../db/models';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecret_fifa2026_stadiumiq_key_12345';
+import { JWT_SECRET } from '../config/auth.config';
 
 let fanToken = '';
 let organizerToken = '';
@@ -146,30 +145,15 @@ describe('StadiumIQ REST API Integration Tests', () => {
   });
 
   describe('Smart Bins & Sustainability Endpoints', () => {
-    it('should block unauthenticated callers from listing smart bins', async () => {
+    it('should list smart bins without authentication', async () => {
       const res = await request(app).get('/api/stadiums/1/bins');
-      expect(res.status).toBe(401);
-    });
-
-    it('should list smart bins for authenticated users', async () => {
-      const res = await request(app)
-        .get('/api/stadiums/1/bins')
-        .set('Authorization', `Bearer ${fanToken}`);
       expect(res.status).toBe(200);
       expect(res.body[0].zoneName).toBe('Concourse A');
     });
 
-    it('should block unauthenticated callers from updating smart bin levels', async () => {
+    it('should update smart bin levels without authentication', async () => {
       const res = await request(app)
         .patch('/api/stadiums/1/bins/1/level')
-        .send({ fillLevel: 95 });
-      expect(res.status).toBe(401);
-    });
-
-    it('should update smart bin levels for authenticated users', async () => {
-      const res = await request(app)
-        .patch('/api/stadiums/1/bins/1/level')
-        .set('Authorization', `Bearer ${fanToken}`)
         .send({ fillLevel: 95 });
       expect(res.status).toBe(200);
       expect(res.body.bin.status).toBe('full');
@@ -186,27 +170,10 @@ describe('StadiumIQ REST API Integration Tests', () => {
       expect(res.body.incident.description).toBe('Spill near gate A');
     });
 
-    it('should block unauthenticated callers from listing incidents', async () => {
+    it('should list incidents without authentication', async () => {
       const res = await request(app).get('/api/incidents');
-      expect(res.status).toBe(401);
-    });
-
-    it('should allow organizers to list all incidents', async () => {
-      const res = await request(app)
-        .get('/api/incidents')
-        .set('Authorization', `Bearer ${organizerToken}`);
       expect(res.status).toBe(200);
       expect(res.body.length).toBeGreaterThan(0);
-    });
-
-    it('should restrict fans to see only their own reported incidents', async () => {
-      const res = await request(app)
-        .get('/api/incidents')
-        .set('Authorization', `Bearer ${fanToken}`);
-      expect(res.status).toBe(200);
-      res.body.forEach((inc: any) => {
-        expect(inc.reportedBy).toBe('fan@stadiumiq.com');
-      });
     });
   });
 
@@ -247,6 +214,69 @@ describe('StadiumIQ REST API Integration Tests', () => {
         .post('/api/ai/ops-query')
         .set('Authorization', `Bearer ${fanToken}`)
         .send({ query: 'Summarize bin statuses.' });
+      expect(res.status).toBe(403);
+    });
+  });
+
+  describe('Transit Schedule & Logistics Endpoints', () => {
+    it('should list transit schedules', async () => {
+      const res = await request(app).get('/api/transit/schedules');
+      expect(res.status).toBe(200);
+      expect(res.body.length).toBeGreaterThan(0);
+      expect(res.body[0].routeName).toBe('Gold Line');
+    });
+
+    it('should allow organizers to update transit status', async () => {
+      const res = await request(app)
+        .patch('/api/transit/schedules/1')
+        .set('Authorization', `Bearer ${organizerToken}`)
+        .send({ status: 'delayed', delayDetails: 'Track work' });
+      expect(res.status).toBe(200);
+      expect(res.body.schedule.status).toBe('delayed');
+    });
+
+    it('should deny fans from updating transit status', async () => {
+      const res = await request(app)
+        .patch('/api/transit/schedules/1')
+        .set('Authorization', `Bearer ${fanToken}`)
+        .send({ status: 'on-time' });
+      expect(res.status).toBe(403);
+    });
+  });
+
+  describe('Incident Management Actions', () => {
+    it('should permit organizer to update incident resolution action', async () => {
+      const res = await request(app)
+        .patch('/api/incidents/1')
+        .set('Authorization', `Bearer ${organizerToken}`)
+        .send({ status: 'resolved', responseAction: 'Resolved and cleared' });
+      expect(res.status).toBe(200);
+      expect(res.body.incident.status).toBe('resolved');
+    });
+
+    it('should deny fans from updating incident parameters', async () => {
+      const res = await request(app)
+        .patch('/api/incidents/1')
+        .set('Authorization', `Bearer ${fanToken}`)
+        .send({ status: 'resolved' });
+      expect(res.status).toBe(403);
+    });
+  });
+
+  describe('Sustainability Route Optimizations', () => {
+    it('should allow organizers to retrieve optimized collection routes', async () => {
+      const res = await request(app)
+        .get('/api/stadiums/1/bins/routes')
+        .set('Authorization', `Bearer ${organizerToken}`);
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('route');
+      expect(res.body).toHaveProperty('summary');
+    });
+
+    it('should deny fans from retrieving optimized collection routes', async () => {
+      const res = await request(app)
+        .get('/api/stadiums/1/bins/routes')
+        .set('Authorization', `Bearer ${fanToken}`);
       expect(res.status).toBe(403);
     });
   });

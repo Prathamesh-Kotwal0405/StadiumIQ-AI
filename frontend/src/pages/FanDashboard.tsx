@@ -232,24 +232,27 @@ export const FanDashboard: React.FC = () => {
               Avoid bottlenecks! Choose your arrival side, and our routing engine will direct you to the fastest entry gate.
             </p>
 
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
-              <select
-                id="preferred-side-select"
-                value={preferredSide}
-                onChange={(e) => setPreferredSide(e.target.value)}
-                className="input-field"
-                style={{ flex: 1 }}
-                aria-label="Select arrival side"
-              >
-                <option value="">Preferred side (Any)</option>
-                <option value="North">North Concourse</option>
-                <option value="South">South Concourse</option>
-                <option value="East">East Concourse</option>
-                <option value="West">West Concourse</option>
-              </select>
-              <button onClick={getGateRecommendation} className="btn btn-primary" style={{ padding: '0 1.5rem' }} disabled={gateLoading}>
-                {gateLoading ? 'Analyzing...' : 'Get Route'}
-              </button>
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label htmlFor="preferred-side-select" className="form-label" style={{ fontSize: '0.85rem', fontWeight: 600 }}>Arrival Side</label>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <select
+                  id="preferred-side-select"
+                  value={preferredSide}
+                  onChange={(e) => setPreferredSide(e.target.value)}
+                  className="input-field"
+                  style={{ flex: 1 }}
+                  aria-label="Select arrival side"
+                >
+                  <option value="">Preferred side (Any)</option>
+                  <option value="North">North Concourse</option>
+                  <option value="South">South Concourse</option>
+                  <option value="East">East Concourse</option>
+                  <option value="West">West Concourse</option>
+                </select>
+                <button onClick={getGateRecommendation} className="btn btn-primary" style={{ padding: '0 1.5rem' }} disabled={gateLoading}>
+                  {gateLoading ? 'Analyzing...' : 'Get Route'}
+                </button>
+              </div>
             </div>
 
             {recommendedGate && (

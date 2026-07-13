@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { TransitSchedule } from '../db/models';
 
 export class TransitController {
-  public static async getSchedules(req: Request, res: Response, next: NextFunction) {
+  public static async getSchedules(_req: Request, res: Response, next: NextFunction) {
     try {
       const schedules = await TransitSchedule.findAll({
         order: [['transportType', 'ASC'], ['routeName', 'ASC']]
