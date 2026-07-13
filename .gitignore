@@ -11,7 +11,7 @@ frontend/dist/
 backend/stadiumiq.sqlite
 
 # Environment configuration variables
-.env
+
 
 # System files
 .DS_Store
