@@ -4,6 +4,31 @@ StadiumIQ AI is a Generative AI-powered venue management and fan experience plat
 
 ---
 
+## 📋 Project Specifications & Overview
+
+### 1. Chosen Vertical
+StadiumIQ AI is tailored for **Smart Venue Management and Fan Experience** for the FIFA World Cup 2026. The platform bridges the gap between spectator convenience (finding open gates, checking transit delay details, requesting immediate assistance) and operational command efficiency (identifying bottlenecks, automated volunteer dispatches, sustainability smart bins routes, operations analyst copilot queries).
+
+### 2. Approach and Logic
+- **Decoupled Client-Server Structure**: React single-page frontend communicates with a modular Node/Express/TypeScript backend.
+- **Relational Integrity & Indexes**: Enforces data reliability via SQLite database tables synced through Sequelize ORM. Custom index annotations optimize primary query targets like gate locations and reported incident queries.
+- **Role-Based Operations**: Employs JSON Web Token authorization schemas to decouple command-level capabilities (organizers) from standard spectator views (fans).
+- **Lightweight Caching**: Incorporates a module-scope caching layer inside the AI service to intercept consecutive duplicate queries, saving API processing overhead.
+- **WCAG Accessibility Standards**: Connects inputs to labels explicitly, enables speech accessibility, adds toast closing aria annotations, and flags visual-only icons with `aria-hidden` attributes for inclusive screen-reader usage.
+
+### 3. How the Solution Works
+- **AI Gate Recommendations**: The routing service checks flow rates and current queue sizes across gates to estimate wait times. Artificially penalizes gate bottlenecks by scaling down flow rates.
+- **Smart Bin Collection Optimization**: Smart bins report fill percentages. When staff requests route optimization, a greedy sorting algorithm maps collection priority for bins above the 50% capacity threshold.
+- **Real-Time Incident Dispatch**: Fans report security issues or assistance requests. Incident routes filter logs depending on user privilege (spectators only view their logs, organizers access all). Volunteers are dispatched with status updates, triggering toast notifications in real-time.
+- **Accessible AI Assist**: Multilingual speech-enabled chatbot provides directions, schedules, and information to spectators.
+
+### 4. Assumptions Made
+- **Stadia Scale**: We assume the stadium coordinates are static.
+- **Default Database State**: The SQLite database seeds with baseline matches, gates, smart bins, and user accounts.
+- **Google Gemini Fallback**: If the `GEMINI_API_KEY` is not provided in environment settings, the AI engine transparently falls back to a rules-based context simulation matching matches, transit routes, and smart bin locations to maintain offline operational continuity.
+
+---
+
 ## 🛠️ Architecture & Tech Stack
 
 StadiumIQ is built with a strictly decoupled frontend and backend ecosystem:
