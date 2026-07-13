@@ -144,7 +144,7 @@ export const StaffDashboard: React.FC = () => {
           <div className="glass-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem', margin: 0 }}>
-                <Trash2 className="text-teal" size={20} /> Smart Bins (Sustainability)
+                <Trash2 className="text-teal" size={20} aria-hidden="true" /> Smart Bins (Sustainability)
               </h2>
               <button onClick={getOptimizedRoutes} className="btn btn-primary" style={{ padding: '0.4rem 1rem', fontSize: '0.8rem' }}>
                 Optimize Routing
@@ -174,7 +174,7 @@ export const StaffDashboard: React.FC = () => {
                     <button onClick={() => emptyBin(b.id)} className="btn btn-secondary" style={{ flex: 1, padding: '0.25rem', fontSize: '0.75rem' }} disabled={actionLoading}>
                       Mark Empty
                     </button>
-                    <button onClick={() => triggerSensorIncrement(b.id, b.fillLevel)} className="btn btn-secondary" style={{ padding: '0.25rem', fontSize: '0.75rem' }} title="Simulate IoT sensor update">
+                    <button onClick={() => triggerSensorIncrement(b.id, b.fillLevel)} className="btn btn-secondary" style={{ padding: '0.25rem', fontSize: '0.75rem' }} title="Simulate IoT sensor update" aria-label="Simulate IoT sensor update">
                       ⚡ Sensor Update
                     </button>
                   </div>
@@ -214,7 +214,7 @@ export const StaffDashboard: React.FC = () => {
         <div>
           <div className="glass-card">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem', marginBottom: '1rem' }}>
-              <Activity className="text-blue" size={20} /> Gates Queue Control
+              <Activity className="text-blue" size={20} aria-hidden="true" /> Gates Queue Control
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
               Real-time gate configurations. Select a gate to update flow rates, queue size thresholds, or status updates.
@@ -235,7 +235,7 @@ export const StaffDashboard: React.FC = () => {
                   
                   {user?.role === 'staff' || user?.role === 'organizer' ? (
                     <button onClick={() => handleEditGateSelect(g)} className="btn btn-secondary" style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', gap: '0.25rem' }}>
-                      <Settings size={12} /> Edit Flow Settings
+                      <Settings size={12} aria-hidden="true" /> Edit Flow Settings
                     </button>
                   ) : (
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>*Editing requires staff permissions</span>
@@ -250,8 +250,9 @@ export const StaffDashboard: React.FC = () => {
                 <h3>Configure: {selectedGate.name}</h3>
                 
                 <div className="form-group" style={{ marginTop: '1rem' }}>
-                  <label className="form-label">Flow Rate (people/min)</label>
+                  <label htmlFor="gate-flow-rate-input" className="form-label">Flow Rate (people/min)</label>
                   <input
+                    id="gate-flow-rate-input"
                     type="number"
                     value={flowRate}
                     onChange={(e) => setFlowRate(parseInt(e.target.value) || 0)}
@@ -261,8 +262,9 @@ export const StaffDashboard: React.FC = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Current Queue (people)</label>
+                  <label htmlFor="gate-queue-size-input" className="form-label">Current Queue (people)</label>
                   <input
+                    id="gate-queue-size-input"
                     type="number"
                     value={queueSize}
                     onChange={(e) => setQueueSize(parseInt(e.target.value) || 0)}
@@ -272,8 +274,9 @@ export const StaffDashboard: React.FC = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Status</label>
+                  <label htmlFor="gate-status-select" className="form-label">Status</label>
                   <select
+                    id="gate-status-select"
                     value={gateStatus}
                     onChange={(e: any) => setGateStatus(e.target.value)}
                     className="input-field"

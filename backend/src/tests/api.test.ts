@@ -146,15 +146,30 @@ describe('StadiumIQ REST API Integration Tests', () => {
   });
 
   describe('Smart Bins & Sustainability Endpoints', () => {
-    it('should list smart bins', async () => {
+    it('should block unauthenticated callers from listing smart bins', async () => {
       const res = await request(app).get('/api/stadiums/1/bins');
+      expect(res.status).toBe(401);
+    });
+
+    it('should list smart bins for authenticated users', async () => {
+      const res = await request(app)
+        .get('/api/stadiums/1/bins')
+        .set('Authorization', `Bearer ${fanToken}`);
       expect(res.status).toBe(200);
       expect(res.body[0].zoneName).toBe('Concourse A');
     });
 
-    it('should update smart bin levels and adjust status accordingly', async () => {
+    it('should block unauthenticated callers from updating smart bin levels', async () => {
       const res = await request(app)
         .patch('/api/stadiums/1/bins/1/level')
+        .send({ fillLevel: 95 });
+      expect(res.status).toBe(401);
+    });
+
+    it('should update smart bin levels for authenticated users', async () => {
+      const res = await request(app)
+        .patch('/api/stadiums/1/bins/1/level')
+        .set('Authorization', `Bearer ${fanToken}`)
         .send({ fillLevel: 95 });
       expect(res.status).toBe(200);
       expect(res.body.bin.status).toBe('full');
@@ -170,6 +185,29 @@ describe('StadiumIQ REST API Integration Tests', () => {
       expect(res.status).toBe(201);
       expect(res.body.incident.description).toBe('Spill near gate A');
     });
+
+    it('should block unauthenticated callers from listing incidents', async () => {
+      const res = await request(app).get('/api/incidents');
+      expect(res.status).toBe(401);
+    });
+
+    it('should allow organizers to list all incidents', async () => {
+      const res = await request(app)
+        .get('/api/incidents')
+        .set('Authorization', `Bearer ${organizerToken}`);
+      expect(res.status).toBe(200);
+      expect(res.body.length).toBeGreaterThan(0);
+    });
+
+    it('should restrict fans to see only their own reported incidents', async () => {
+      const res = await request(app)
+        .get('/api/incidents')
+        .set('Authorization', `Bearer ${fanToken}`);
+      expect(res.status).toBe(200);
+      res.body.forEach((inc: any) => {
+        expect(inc.reportedBy).toBe('fan@stadiumiq.com');
+      });
+    });
   });
 
   describe('AI Copilot Assistant Endpoints', () => {
@@ -179,6 +217,20 @@ describe('StadiumIQ REST API Integration Tests', () => {
         .send({ query: 'How is the transit running?', language: 'en' });
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty('response');
+    });
+
+    it('should cache consecutive duplicate chatbot questions', async () => {
+      const res1 = await request(app)
+        .post('/api/ai/chat')
+        .send({ query: 'How is the transit running?', language: 'en' });
+      expect(res1.status).toBe(200);
+      const text1 = res1.body.response;
+
+      const res2 = await request(app)
+        .post('/api/ai/chat')
+        .send({ query: 'How is the transit running?', language: 'en' });
+      expect(res2.status).toBe(200);
+      expect(res2.body.response).toBe(text1);
     });
 
     it('should allow organizers to query operations copilot', async () => {

@@ -32,10 +32,20 @@ User.init({
     allowNull: false
   },
   role: {
-    type: DataTypes.ENUM('fan', 'organizer'),
+    type: DataTypes.ENUM('fan', 'staff', 'volunteer', 'organizer'),
     allowNull: false
   }
-}, { sequelize, modelName: 'user' });
+}, {
+  sequelize,
+  modelName: 'user',
+  indexes: [
+    {
+      name: 'users_email_idx',
+      unique: true,
+      fields: ['email']
+    }
+  ]
+});
 
 export class Stadium extends Model {
   declare id: number;
@@ -116,7 +126,16 @@ Match.init({
     type: DataTypes.INTEGER,
     allowNull: false
   }
-}, { sequelize, modelName: 'match' });
+}, {
+  sequelize,
+  modelName: 'match',
+  indexes: [
+    {
+      name: 'matches_stadium_id_idx',
+      fields: ['stadium_id']
+    }
+  ]
+});
 
 export class Gate extends Model {
   declare id: number;
@@ -154,7 +173,16 @@ Gate.init({
     type: DataTypes.INTEGER,
     allowNull: false
   }
-}, { sequelize, modelName: 'gate' });
+}, {
+  sequelize,
+  modelName: 'gate',
+  indexes: [
+    {
+      name: 'gates_stadium_id_idx',
+      fields: ['stadium_id']
+    }
+  ]
+});
 
 export class SmartBin extends Model {
   declare id: number;
@@ -193,7 +221,16 @@ SmartBin.init({
     type: DataTypes.INTEGER,
     allowNull: false
   }
-}, { sequelize, modelName: 'smart_bin' });
+}, {
+  sequelize,
+  modelName: 'smart_bin',
+  indexes: [
+    {
+      name: 'smart_bins_stadium_id_idx',
+      fields: ['stadium_id']
+    }
+  ]
+});
 
 export class TransitSchedule extends Model {
   declare id: number;
@@ -270,7 +307,16 @@ Incident.init({
     type: DataTypes.STRING,
     defaultValue: ''
   }
-}, { sequelize, modelName: 'incident' });
+}, {
+  sequelize,
+  modelName: 'incident',
+  indexes: [
+    {
+      name: 'incidents_reported_by_idx',
+      fields: ['reported_by']
+    }
+  ]
+});
 
 // Associations
 Stadium.hasMany(Match, { foreignKey: 'stadiumId', onDelete: 'CASCADE' });

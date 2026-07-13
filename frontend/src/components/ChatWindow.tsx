@@ -176,7 +176,7 @@ export const ChatWindow: React.FC = () => {
               <div>
                 <h4 style={{ margin: 0, fontSize: '0.95rem' }}>Fan AI Assistant</h4>
                 <span style={{ fontSize: '0.65rem', color: 'var(--accent-teal)', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                  <Sparkles size={8} /> Gemini Powered
+                  <Sparkles size={8} aria-hidden="true" /> Gemini Powered
                 </span>
               </div>
             </div>
@@ -184,7 +184,7 @@ export const ChatWindow: React.FC = () => {
             {/* Language Picker & Close */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '0.75rem', background: 'rgba(0,0,0,0.2)', padding: '2px 6px', borderRadius: '4px' }}>
-                <Globe size={12} />
+                <Globe size={12} aria-hidden="true" />
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
@@ -228,8 +228,9 @@ export const ChatWindow: React.FC = () => {
                       right: '6px'
                     }}
                     title="Read message aloud"
+                    aria-label="Read message aloud"
                   >
-                    <Volume2 size={12} />
+                    <Volume2 size={12} aria-hidden="true" />
                   </button>
                 )}
               </div>
@@ -278,7 +279,7 @@ export const ChatWindow: React.FC = () => {
               title="Speak microphone input"
               aria-label="Microphone input"
             >
-              <Mic size={16} />
+              <Mic size={16} aria-hidden="true" />
             </button>
 
             <button
@@ -288,7 +289,7 @@ export const ChatWindow: React.FC = () => {
               disabled={loading || !input.trim()}
               aria-label="Send message"
             >
-              <Send size={16} />
+              <Send size={16} aria-hidden="true" />
             </button>
           </div>
         </div>

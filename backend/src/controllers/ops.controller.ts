@@ -89,9 +89,15 @@ export class OpsController {
     }
   }
 
-  public static async getIncidents(req: Request, res: Response, next: NextFunction) {
+  public static async getIncidents(req: AuthRequest, res: Response, next: NextFunction) {
     try {
+      const filter: any = {};
+      if (req.user && req.user.role !== 'organizer') {
+        filter.reportedBy = req.user.email;
+      }
+
       const incidents = await Incident.findAll({
+        where: filter,
         order: [['createdAt', 'DESC']]
       });
       res.json(incidents);

@@ -12,11 +12,25 @@ if (apiKey) {
   console.warn('WARNING: GEMINI_API_KEY is not defined. AI functionality will run in fallback simulation mode.');
 }
 
+interface CacheEntry {
+  response: string;
+  timestamp: number;
+}
+
+const aiCache: Record<string, CacheEntry> = {};
+const CACHE_TTL = 10000; // 10 seconds TTL
+
 export class GeminiService {
   /**
    * Generates a multilingual, accessible response for the Fan Chatbot.
    */
   public static async generateFanResponse(query: string, contextData: any, language: string = 'en'): Promise<string> {
+    const cacheKey = `fan:${language}:${query}:${JSON.stringify(contextData)}`;
+    const cached = aiCache[cacheKey];
+    if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
+      return cached.response;
+    }
+
     const systemInstruction = `
       You are StadiumIQ's Fan Assistant for the FIFA World Cup 2026.
       You are friendly, accessible, helpful, and speak fluent ${language}.
@@ -36,7 +50,9 @@ export class GeminiService {
     `;
 
     if (!genAI) {
-      return this.simulateFanResponse(query, contextData, language);
+      const simulated = this.simulateFanResponse(query, contextData, language);
+      aiCache[cacheKey] = { response: simulated, timestamp: Date.now() };
+      return simulated;
     }
 
     try {
@@ -45,10 +61,14 @@ export class GeminiService {
         contents: [{ role: 'user', parts: [{ text: systemInstruction }] }],
         generationConfig: { maxOutputTokens: 500, temperature: 0.2 }
       });
-      return result.response.text() || 'No response from AI.';
+      const text = result.response.text() || 'No response from AI.';
+      aiCache[cacheKey] = { response: text, timestamp: Date.now() };
+      return text;
     } catch (error) {
       console.error('Gemini API call failed, falling back to simulated response:', error);
-      return this.simulateFanResponse(query, contextData, language);
+      const simulated = this.simulateFanResponse(query, contextData, language);
+      aiCache[cacheKey] = { response: simulated, timestamp: Date.now() };
+      return simulated;
     }
   }
 
@@ -56,6 +76,12 @@ export class GeminiService {
    * Summarizes operational metrics, gates flow, and reported incidents, generating action items.
    */
   public static async analyzeOperations(query: string, operationalData: any): Promise<string> {
+    const cacheKey = `ops:${query}:${JSON.stringify(operationalData)}`;
+    const cached = aiCache[cacheKey];
+    if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
+      return cached.response;
+    }
+
     const systemInstruction = `
       You are StadiumIQ's Lead Operations Analyst.
       Analyze the following live stadium operational state:
@@ -65,16 +91,15 @@ export class GeminiService {
       1. Identify critical bottlenecks, full smart bins, and unresolved incidents.
       2. Summarize overall stadium status (e.g., Gate flow, Transit delays).
       3. Generate a structured markdown response with:
-         - Status Summary (General health of operations)
-         - Critical Alerts (High severity items requiring immediate dispatch)
-         - Optimization Actions (Specific instructions for volunteers/staff)
       4. Answer this specific query from the Stadium Operations Director: "${query}"
       
       Keep the tone highly professional, precise, and operational.
     `;
 
     if (!genAI) {
-      return this.simulateOpsResponse(query, operationalData);
+      const simulated = this.simulateOpsResponse(query, operationalData);
+      aiCache[cacheKey] = { response: simulated, timestamp: Date.now() };
+      return simulated;
     }
 
     try {
@@ -83,10 +108,14 @@ export class GeminiService {
         contents: [{ role: 'user', parts: [{ text: systemInstruction }] }],
         generationConfig: { maxOutputTokens: 600, temperature: 0.1 }
       });
-      return result.response.text() || 'No response from AI.';
+      const text = result.response.text() || 'No response from AI.';
+      aiCache[cacheKey] = { response: text, timestamp: Date.now() };
+      return text;
     } catch (error) {
       console.error('Gemini API call failed, falling back to simulated response:', error);
-      return this.simulateOpsResponse(query, operationalData);
+      const simulated = this.simulateOpsResponse(query, operationalData);
+      aiCache[cacheKey] = { response: simulated, timestamp: Date.now() };
+      return simulated;
     }
   }
 

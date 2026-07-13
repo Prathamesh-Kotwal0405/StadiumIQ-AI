@@ -95,9 +95,10 @@ export const Login: React.FC = () => {
 
         <form onSubmit={handleSubmit}>
           {isRegistering && (
-            <div className="form-group className='animated-fade'">
-              <label className="form-label">Full Name</label>
+            <div className="form-group animated-fade">
+              <label htmlFor="name-input" className="form-label">Full Name</label>
               <input
+                id="name-input"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -110,8 +111,9 @@ export const Login: React.FC = () => {
           )}
 
           <div className="form-group">
-            <label className="form-label">Email Address</label>
+            <label htmlFor="email-input" className="form-label">Email Address</label>
             <input
+              id="email-input"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -123,8 +125,9 @@ export const Login: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
+            <label htmlFor="password-input" className="form-label">Password</label>
             <input
+              id="password-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -137,8 +140,9 @@ export const Login: React.FC = () => {
 
           {isRegistering && (
             <div className="form-group animated-fade">
-              <label className="form-label">Confirm Password</label>
+              <label htmlFor="confirm-password-input" className="form-label">Confirm Password</label>
               <input
+                id="confirm-password-input"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

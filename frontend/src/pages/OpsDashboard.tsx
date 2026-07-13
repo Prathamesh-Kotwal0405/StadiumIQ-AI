@@ -211,7 +211,7 @@ export const OpsDashboard: React.FC = () => {
           {/* Operations Copilot */}
           <div className="glass-card">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem', marginBottom: '1rem' }}>
-              <Sparkles className="text-teal" size={20} /> GenAI Local Operations Copilot
+              <Sparkles className="text-teal" size={20} aria-hidden="true" /> GenAI Local Operations Copilot
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1rem' }}>
               Query the local context engine for crowd mitigation tactics, smart bin routes, or incident resolution checklists.
@@ -219,6 +219,7 @@ export const OpsDashboard: React.FC = () => {
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
               <input
+                id="ai-query-input"
                 type="text"
                 value={aiQuery}
                 onChange={(e) => setAiQuery(e.target.value)}
@@ -233,7 +234,7 @@ export const OpsDashboard: React.FC = () => {
                 style={{ display: 'flex', gap: '0.25rem', alignItems: 'center', padding: '0 1.5rem' }}
                 disabled={aiLoading}
               >
-                {aiLoading ? 'Analyzing...' : <><MessageSquare size={16} /> Query AI</>}
+                {aiLoading ? 'Analyzing...' : <><MessageSquare size={16} aria-hidden="true" /> Query AI</>}
               </button>
             </div>
 
@@ -257,7 +258,7 @@ export const OpsDashboard: React.FC = () => {
           {/* Active Incident List */}
           <div className="glass-card">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem', marginBottom: '1rem' }}>
-              <ShieldAlert className="text-red" size={20} /> Incident Dispatch logs
+              <ShieldAlert className="text-red" size={20} aria-hidden="true" /> Incident Dispatch logs
             </h2>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -301,16 +302,16 @@ export const OpsDashboard: React.FC = () => {
                               style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem', height: '34px', display: 'flex', gap: '0.25rem', alignItems: 'center' }}
                               disabled={actionLoading || !(dispatchTexts[i.id] || '').trim()}
                             >
-                              <Send size={12} /> Send Volunteer
+                              <Send size={12} aria-hidden="true" /> Send Volunteer
                             </button>
                           </div>
                         )}
                       </div>
 
                       {i.status === 'open' && (
-                        <button onClick={() => resolveIncident(i.id)} className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', color: 'var(--accent-green)', gap: '0.25rem', whiteSpace: 'nowrap' }} disabled={actionLoading}>
-                          <CheckCircle size={14} /> Resolve
-                        </button>
+                          <button onClick={() => resolveIncident(i.id)} className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', color: 'var(--accent-green)', gap: '0.25rem', whiteSpace: 'nowrap' }} disabled={actionLoading}>
+                            <CheckCircle size={14} aria-hidden="true" /> Resolve
+                          </button>
                       )}
                     </div>
                   </div>
@@ -325,13 +326,14 @@ export const OpsDashboard: React.FC = () => {
         <div>
           <div className="glass-card">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem', marginBottom: '1.25rem' }}>
-              <Plus className="text-blue" size={20} /> Report Safety Incident
+              <Plus className="text-blue" size={20} aria-hidden="true" /> Report Safety Incident
             </h2>
             
             <form onSubmit={handleReportIncident}>
               <div className="form-group">
-                <label className="form-label">Incident Description</label>
+                <label htmlFor="new-desc-textarea" className="form-label">Incident Description</label>
                 <textarea
+                  id="new-desc-textarea"
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
                   className="input-field"
@@ -343,8 +345,9 @@ export const OpsDashboard: React.FC = () => {
               </div>
 
               <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                <label className="form-label">Severity Level</label>
+                <label htmlFor="new-severity-select" className="form-label">Severity Level</label>
                 <select
+                  id="new-severity-select"
                   value={newSeverity}
                   onChange={(e: any) => setNewSeverity(e.target.value)}
                   className="input-field"

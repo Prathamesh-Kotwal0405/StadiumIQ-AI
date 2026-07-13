@@ -170,12 +170,13 @@ export const FanDashboard: React.FC = () => {
             }}
           >
             <div style={{ fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Bell size={16} />
+              <Bell size={16} aria-hidden="true" />
               <span>{n.text}</span>
             </div>
             <button
               onClick={() => setNotifications((prev) => prev.filter((item) => item.id !== n.id))}
               style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer', fontSize: '1.15rem', fontWeight: 'bold', marginLeft: '0.5rem' }}
+              aria-label="Close notification"
             >
               &times;
             </button>
@@ -199,7 +200,7 @@ export const FanDashboard: React.FC = () => {
           {/* Matches Panel */}
           <div className="glass-card">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem' }}>
-              <Calendar className="text-blue" size={20} /> Upcoming Stadium Matches
+              <Calendar className="text-blue" size={20} aria-hidden="true" /> Upcoming Stadium Matches
             </h2>
             {matches.length === 0 ? (
               <p style={{ color: 'var(--text-muted)' }}>No matches scheduled at the moment.</p>
@@ -225,7 +226,7 @@ export const FanDashboard: React.FC = () => {
           {/* Smart Gate Navigation */}
           <div className="glass-card">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem' }}>
-              <Compass className="text-teal" size={20} /> AI Smart Gate Recommendation
+              <Compass className="text-teal" size={20} aria-hidden="true" /> AI Smart Gate Recommendation
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1rem' }}>
               Avoid bottlenecks! Choose your arrival side, and our routing engine will direct you to the fastest entry gate.
@@ -233,6 +234,7 @@ export const FanDashboard: React.FC = () => {
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
               <select
+                id="preferred-side-select"
                 value={preferredSide}
                 onChange={(e) => setPreferredSide(e.target.value)}
                 className="input-field"
@@ -253,7 +255,7 @@ export const FanDashboard: React.FC = () => {
             {recommendedGate && (
               <div className="glass-card" style={{ borderColor: 'var(--accent-teal)', background: 'rgba(13, 148, 136, 0.05)', marginBottom: '1.5rem' }}>
                 <h4 style={{ color: 'var(--accent-teal)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  <UserCheck size={16} /> Recommended Entry Point
+                  <UserCheck size={16} aria-hidden="true" /> Recommended Entry Point
                 </h4>
                 <h3 style={{ margin: '0.5rem 0 0.25rem 0' }}>{recommendedGate.name}</h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
@@ -291,7 +293,7 @@ export const FanDashboard: React.FC = () => {
           {/* Transit Schedules */}
           <div className="glass-card">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem' }}>
-              <Train className="text-gold" size={20} /> Real-Time Transit Options
+              <Train className="text-gold" size={20} aria-hidden="true" /> Real-Time Transit Options
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
               {transit.map((t) => (
@@ -320,7 +322,7 @@ export const FanDashboard: React.FC = () => {
           {/* Accessibility Guide */}
           <div className="glass-card" style={{ borderLeft: '4px solid var(--accent-teal)' }}>
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem' }}>
-              <Accessibility className="text-teal" size={20} /> Accessibility Concierge Services
+              <Accessibility className="text-teal" size={20} aria-hidden="true" /> Accessibility Concierge Services
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: '0.5rem 0 1rem 0' }}>
               StadiumIQ is dedicated to providing an inclusive environment for all football fans.
@@ -348,7 +350,7 @@ export const FanDashboard: React.FC = () => {
         {/* Incident Form Card */}
         <div className="glass-card" style={{ borderLeft: '4px solid var(--accent-red)' }}>
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem', marginBottom: '1rem' }}>
-            <ShieldAlert className="text-red" size={20} /> Report an Issue / Request Help
+            <ShieldAlert className="text-red" size={20} aria-hidden="true" /> Report an Issue / Request Help
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1rem' }}>
             Encountered a problem or security hazard? Report it directly so a command administrator can dispatch volunteers to assist you.
@@ -362,8 +364,9 @@ export const FanDashboard: React.FC = () => {
 
           <form onSubmit={handleReportIncident}>
             <div className="form-group">
-              <label className="form-label">Describe the Issue</label>
+              <label htmlFor="incident-desc-textarea" className="form-label">Describe the Issue</label>
               <textarea
+                id="incident-desc-textarea"
                 value={incidentDesc}
                 onChange={(e) => setIncidentDesc(e.target.value)}
                 className="input-field"
@@ -375,8 +378,9 @@ export const FanDashboard: React.FC = () => {
             </div>
 
             <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-              <label className="form-label">Urgency Level</label>
+              <label htmlFor="incident-severity-select" className="form-label">Urgency Level</label>
               <select
+                id="incident-severity-select"
                 value={incidentSeverity}
                 onChange={(e: any) => setIncidentSeverity(e.target.value)}
                 className="input-field"

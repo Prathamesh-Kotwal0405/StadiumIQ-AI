@@ -58,9 +58,10 @@ app.patch(
 );
 
 // Smart Bins & Route Optimizations
-app.get('/api/stadiums/:stadiumId/bins', OpsController.getBins);
+app.get('/api/stadiums/:stadiumId/bins', authenticateJWT, OpsController.getBins);
 app.patch(
   '/api/stadiums/:stadiumId/bins/:binId/level', 
+  authenticateJWT,
   updateBinValidationRules, 
   validateRequest, 
   OpsController.updateBinLevel
@@ -82,7 +83,7 @@ app.patch(
 );
 
 // Incidents Logging Routes
-app.get('/api/incidents', OpsController.getIncidents);
+app.get('/api/incidents', authenticateJWT, OpsController.getIncidents);
 app.post(
   '/api/incidents', 
   authenticateJWT, 
